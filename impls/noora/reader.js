@@ -1,5 +1,13 @@
 const { CommentError } = require('./errors');
-const { Nil, List, Vector, Str, HashMap } = require('./types');
+const {
+  Nil,
+  List,
+  Vector,
+  Str,
+  HashMap,
+  KeyWord,
+  MalSymbol,
+} = require('./types');
 
 class READER {
   constructor(tokens) {
@@ -46,7 +54,10 @@ const read_atom = reader => {
     return parseFloat(token);
   }
   if (token.match(/^"(?:\\.|[^\\"])*"$/)) {
-    return new Str(token.slice(1, -1));
+    const str = token
+      .slice(1, -1)
+      .replace(/\\(.)/g, (_, match) => (match === 'n' ? '\n' : match));
+    return new Str(str);
   }
   if (token === 'true') {
     return true;
@@ -57,8 +68,14 @@ const read_atom = reader => {
   if (token === 'nil') {
     return Nil;
   }
+  if (token.startsWith(':')) {
+    return new KeyWord(token.slice(1));
+  }
+  if (token.startsWith('"')) {
+    throw `unbalanced "`;
+  }
 
-  return token;
+  return new MalSymbol(token);
 };
 
 const read_seq = (reader, closingSymbol) => {
@@ -98,7 +115,11 @@ const read_hashmap = reader => {
     throw `Duplicate key: ${duplicates[0]}`;
   }
 
-  return new HashMap(ast);
+  const map = new Map();
+  for (let index = 0; index < ast.length; index += 2) {
+    map.set(ast[index], ast[index + 1]);
+  }
+  return new HashMap(map);
 };
 
 const read_form = reader => {

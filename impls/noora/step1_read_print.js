@@ -12,7 +12,7 @@ const READ = str => read_str(str);
 
 const EVAL = ast => ast;
 
-const PRINT = value => pr_str(value);
+const PRINT = value => pr_str(value, true);
 
 const rep = str => PRINT(EVAL(READ(str)));
 

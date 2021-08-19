@@ -1,4 +1,5 @@
 const readline = require('readline');
+const { CommentError } = require('./errors');
 const { pr_str } = require('./printer');
 const { read_str } = require('./reader');
 
@@ -19,8 +20,10 @@ const main = () => {
   rl.question('user> ', str => {
     try {
       console.log(rep(str));
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      if (!(error instanceof CommentError)) {
+        console.log(error);
+      }
     } finally {
       main();
     }

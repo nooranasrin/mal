@@ -1,3 +1,4 @@
+const { CommentError } = require('./errors');
 const { Nil, List, Vector, Str, HashMap } = require('./types');
 
 class READER {
@@ -22,7 +23,17 @@ class READER {
 const tokenize = str => {
   const regexp =
     /[\s,]*(~@|[\[\]{}()'`~^@]|"(?:\\.|[^\\"])*"?|;.*|[^\s\[\]{}('"`,;)]*)/g;
-  return [...str.matchAll(regexp)].map(t => t[1]).slice(0, -1);
+
+  const matches = [...str.matchAll(regexp)];
+
+  const tokens = matches.reduce((tokens, value) => {
+    if (!value[1].startsWith(';')) {
+      tokens.push(value[1]);
+    }
+    return tokens;
+  }, []);
+
+  return tokens.slice(0, -1);
 };
 
 const read_atom = reader => {
@@ -113,6 +124,9 @@ const read_form = reader => {
 
 const read_str = str => {
   const tokens = tokenize(str);
+  if (tokens.length === 0) {
+    throw new CommentError();
+  }
   const reader = new READER(tokens);
   return read_form(reader);
 };

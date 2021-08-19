@@ -1,0 +1,5 @@
+fileignoreconfig:
+- filename: impls/noora/reader.js
+  checksum: a6ffabecdd11b69b30c5e62d6271ffc0c931a69ab8dc524fb0f5ed20d355c96a
+- filename: impls/noora/types.js
+  checksum: b77e5f9879eab2b374c26ffb038a6118dea7b9c5e81470a8cd226a883550c2d4

@@ -33,6 +33,24 @@ class Vector extends MalTypes {
   }
 }
 
+class HashMap extends MalTypes {
+  constructor(ast) {
+    super();
+    this.ast = ast;
+  }
+
+  pr_str() {
+    let hashmap = '';
+    for (const [index, val] of this.ast.entries()) {
+      hashmap += `${pr_str(val)}`;
+      const isLastVal = index === this.ast.length - 1;
+      const isKey = index % 2 === 0;
+      hashmap += isKey ? ' ' : isLastVal ? '' : ', ';
+    }
+    return '{' + hashmap + '}';
+  }
+}
+
 class Str extends MalTypes {
   constructor(str) {
     super();
@@ -56,4 +74,4 @@ class NilVal extends MalTypes {
 
 const Nil = new NilVal();
 
-module.exports = { MalTypes, Nil, List, Vector, Str, pr_str };
+module.exports = { MalTypes, Nil, List, Vector, Str, HashMap, pr_str };

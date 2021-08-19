@@ -1,4 +1,4 @@
-const { Nil, List, Vector, Str } = require('./types');
+const { Nil, List, Vector, Str, HashMap } = require('./types');
 
 class READER {
   constructor(tokens) {
@@ -46,7 +46,7 @@ const read_atom = reader => {
   if (token === 'nil') {
     return Nil;
   }
-  
+
   return token;
 };
 
@@ -75,6 +75,21 @@ const read_vector = reader => {
   return new Vector(ast);
 };
 
+const read_hashmap = reader => {
+  const ast = read_seq(reader, '}');
+  if (ast.length % 2 !== 0) {
+    throw 'Map literal must contain an even number of forms';
+  }
+
+  const keys = ast.filter((_, index) => index % 2 === 0);
+  const duplicates = keys.filter((val, index) => keys.indexOf(val) != index);
+  if (duplicates.length > 0) {
+    throw `Duplicate key: ${duplicates[0]}`;
+  }
+
+  return new HashMap(ast);
+};
+
 const read_form = reader => {
   const token = reader.peek();
 
@@ -83,12 +98,16 @@ const read_form = reader => {
       return read_list(reader);
     case '[':
       return read_vector(reader);
+    case '{':
+      return read_hashmap(reader);
     case ')':
       throw 'unbalanced )';
     case ']':
       throw 'unbalanced ]';
+    case '}':
+      throw 'unbalanced }';
   }
-  
+
   return read_atom(reader);
 };
 

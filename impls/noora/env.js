@@ -6,6 +6,14 @@ class Env {
     this.data = new Map();
   }
 
+  static createEnv(outer, binds, exprs) {
+    const env = new Env(outer);
+    for (let [index, bind] of binds.entries()) {
+      env.set(bind, exprs[index]);
+    }
+    return env;
+  }
+
   set(key, value) {
     if (!(key instanceof MalSymbol)) {
       throw `${key} is not supported`;

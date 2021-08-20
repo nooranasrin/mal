@@ -20,6 +20,10 @@ class List extends MalTypes {
   pr_str(printReadably = false) {
     return '(' + this.ast.map(pr_str).join(' ') + ')';
   }
+
+  isEmpty() {
+    return this.ast.length === 0;
+  }
 }
 
 class Vector extends MalTypes {
@@ -30,6 +34,10 @@ class Vector extends MalTypes {
 
   pr_str(printReadably = false) {
     return '[' + this.ast.map(pr_str).join(' ') + ']';
+  }
+
+  isEmpty() {
+    return this.ast.length === 0;
   }
 }
 

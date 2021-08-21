@@ -93,6 +93,12 @@ const EVAL = (ast, env) => {
         ? EVAL(ast.ast[3], env)
         : EVAL(ast.ast[2], env);
 
+    case 'fn*':
+      return (...expr) => {
+        const newEnv = Env.createEnv(env, ast.ast[1].ast, expr);
+        return EVAL(ast.ast[2], newEnv);
+      };
+
     default:
       const [func, ...args] = eval_ast(ast, env).ast;
       if (func instanceof Function) {

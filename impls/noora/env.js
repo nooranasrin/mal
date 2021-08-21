@@ -24,7 +24,7 @@ class Env {
 
   find(key) {
     const value = this.data.get(key.symbol);
-    if (value) {
+    if (value !== undefined) {
       return value;
     }
     return this.outer && this.outer.find(key);
@@ -36,7 +36,7 @@ class Env {
     }
 
     const value = this.find(key);
-    if (!value) {
+    if (value === undefined) {
       throw `${key.symbol} not found`;
     }
     return value;

@@ -37,6 +37,8 @@ const count = param => {
   throw `unsupported operation ${count} on ${param}`;
 };
 
+const equalTo = (val1, val2) => val1 === val2;
+
 // const list = (...args) => {
 //   return new List(args);
 // };
@@ -53,6 +55,7 @@ const ns = {
   prn,
   'empty?': empty,
   count,
+  '=': equalTo,
   //   list,
   //   'list?': isList,
 };

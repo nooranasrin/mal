@@ -24,6 +24,10 @@ class List extends MalTypes {
   isEmpty() {
     return this.ast.length === 0;
   }
+
+  count() {
+    return this.ast.length;
+  }
 }
 
 class Vector extends MalTypes {
@@ -38,6 +42,10 @@ class Vector extends MalTypes {
 
   isEmpty() {
     return this.ast.length === 0;
+  }
+
+  count() {
+    return this.ast.length;
   }
 }
 
@@ -57,6 +65,14 @@ class HashMap extends MalTypes {
     }
     return '{' + hashmap + '}';
   }
+
+  isEmpty() {
+    return this.ast.size === 0;
+  }
+
+  count() {
+    return this.ast.size;
+  }
 }
 
 class Str extends MalTypes {
@@ -74,6 +90,14 @@ class Str extends MalTypes {
       return '"' + string + '"';
     }
     return '"' + this.str + '"';
+  }
+
+  isEmpty() {
+    return this.str.length === 0;
+  }
+
+  count() {
+    return this.ast.length;
   }
 }
 class KeyWord extends MalTypes {

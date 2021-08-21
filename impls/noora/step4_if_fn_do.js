@@ -1,4 +1,5 @@
 const readline = require('readline');
+const ns = require('./core');
 const Env = require('./env');
 const { CommentError } = require('./errors');
 const { pr_str } = require('./printer');
@@ -12,24 +13,9 @@ const rl = readline.createInterface({
 
 const env = new Env();
 
-env.set(new MalSymbol('+'), (...numbers) =>
-  numbers.reduce((sum, num) => sum + num, 0)
-);
-env.set(new MalSymbol('*'), (...numbers) =>
-  numbers.reduce((prod, num) => prod * num, 1)
-);
-env.set(new MalSymbol('-'), (...numbers) => {
-  if (numbers.length === 1) {
-    numbers.unshift(0);
-  }
-  return numbers.reduce((diff, num) => diff - num);
-});
-env.set(new MalSymbol('/'), (...numbers) => {
-  if (numbers.length === 1) {
-    numbers.unshift(1);
-  }
-  return numbers.reduce((res, num) => res / num);
-});
+for (let key in ns) {
+  env.set(new MalSymbol(key), ns[key]);
+}
 
 const READ = str => read_str(str);
 

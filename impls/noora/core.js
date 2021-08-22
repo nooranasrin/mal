@@ -1,5 +1,6 @@
-const { pr_str, Nil, List, MalTypes } = require('./types');
-
+const { read_str } = require('./reader');
+const { pr_str, Nil, List, MalTypes, Str } = require('./types');
+const { readFileSync } = require('fs');
 const sum = (...numbers) => numbers.reduce((sum, num) => sum + num, 0);
 
 const difference = (...numbers) => {
@@ -39,9 +40,21 @@ const count = param => {
 
 const equalTo = (val1, val2) => val1 === val2;
 
-// const list = (...args) => {
-//   return new List(args);
-// };
+const readString = str => {
+  return read_str(str);
+};
+
+const slurp = fileName => {
+  const content = readFileSync(fileName.str);
+  return new Str(content);
+};
+
+const list = (...args) => {
+  return new List(args);
+};
+
+const str = (...elements) =>
+  elements.map(element => element.pr_str(false).slice(1, -1)).join('');
 
 // const isList = param => {
 //   return param instanceof List;
@@ -56,7 +69,10 @@ const ns = {
   'empty?': empty,
   count,
   '=': equalTo,
-  //   list,
+  'read-string': readString,
+  slurp,
+  list,
+  str,
   //   'list?': isList,
 };
 

@@ -76,8 +76,9 @@ class HashMap extends MalTypes {
 }
 
 class Fn extends MalTypes {
-  constructor(binds, funcBody, env) {
+  constructor(fn, binds, funcBody, env) {
     super();
+    this.fn = fn;
     this.binds = binds;
     this.funcBody = funcBody;
     this.env = env;
@@ -85,6 +86,10 @@ class Fn extends MalTypes {
 
   pr_str(printReadably = false) {
     return '#<Function>';
+  }
+
+  apply(params) {
+    return this.fn.apply(null, params);
   }
 }
 
@@ -135,6 +140,21 @@ class MalSymbol extends MalTypes {
   }
 }
 
+class Atom extends MalTypes {
+  constructor(malValue) {
+    super();
+    this.malValue = malValue;
+  }
+
+  pr_str(printReadably = false) {
+    return `#atom ${this.malValue}`;
+  }
+
+  set(malValue) {
+    return (this.malValue = malValue);
+  }
+}
+
 class NilVal extends MalTypes {
   constructor() {
     super();
@@ -156,6 +176,7 @@ module.exports = {
   HashMap,
   KeyWord,
   Fn,
+  Atom,
   MalSymbol,
   pr_str,
 };

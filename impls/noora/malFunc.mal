@@ -4,3 +4,6 @@
         (read-string 
          (str "(do " (slurp f) "\nnil)")))))
 
+(def! zero?
+  (fn* [num]
+       (if (= num 0) true false)))

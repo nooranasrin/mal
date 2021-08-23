@@ -1,7 +1,34 @@
 const { read_str } = require('./reader');
-const { pr_str, Nil, List, MalTypes, Str } = require('./types');
+const { pr_str, Nil, List, MalTypes, Str, Atom } = require('./types');
 const { readFileSync } = require('fs');
+
 const sum = (...numbers) => numbers.reduce((sum, num) => sum + num, 0);
+
+const product = (...numbers) => numbers.reduce((prod, num) => prod * num, 1);
+
+const mod = (num1, num2) => num1 % num2;
+
+const equalTo = (val1, val2) => val1 === val2;
+
+const readString = str => read_str(str.str);
+
+const atom = malValue => new Atom(malValue);
+
+const isAtom = value => value instanceof Atom;
+
+const deref = atom => atom.malValue;
+
+const reset = (atom, malValue) => atom.set(malValue);
+
+const list = (...args) => new List(args);
+
+const isList = param => param instanceof List;
+
+const lessThanOrEqual = (...numbers) =>
+  numbers.reduce((res, num) => res <= num);
+
+const swap = (atom, fn, ...args) =>
+  atom.set(fn.apply([atom.malValue, ...args]));
 
 const difference = (...numbers) => {
   if (numbers.length === 1) {
@@ -9,8 +36,6 @@ const difference = (...numbers) => {
   }
   return numbers.reduce((diff, num) => diff - num);
 };
-
-const product = (...numbers) => numbers.reduce((prod, num) => prod * num, 1);
 
 const division = (...numbers) => {
   if (numbers.length === 1) {
@@ -38,42 +63,39 @@ const count = param => {
   throw `unsupported operation ${count} on ${param}`;
 };
 
-const equalTo = (val1, val2) => val1 === val2;
-
-const readString = str => {
-  return read_str(str);
-};
-
 const slurp = fileName => {
-  const content = readFileSync(fileName.str);
+  const content = readFileSync(fileName.str, 'utf8');
   return new Str(content);
 };
 
-const list = (...args) => {
-  return new List(args);
+const str = (...elements) => {
+  const str = elements
+    .map(element => element.pr_str(false).slice(1, -1))
+    .join('');
+  return new Str(str);
 };
-
-const str = (...elements) =>
-  elements.map(element => element.pr_str(false).slice(1, -1)).join('');
-
-// const isList = param => {
-//   return param instanceof List;
-// };
 
 const ns = {
   '+': sum,
   '-': difference,
   '*': product,
   '/': division,
-  prn,
+  '<=': lessThanOrEqual,
   'empty?': empty,
-  count,
   '=': equalTo,
   'read-string': readString,
+  'atom?': isAtom,
+  'reset!': reset,
+  'swap!': swap,
+  //   'list?': isList,
+  prn,
+  count,
   slurp,
   list,
   str,
-  //   'list?': isList,
+  atom,
+  deref,
+  mod,
 };
 
 module.exports = ns;

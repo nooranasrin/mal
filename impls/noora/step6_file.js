@@ -15,23 +15,26 @@ const rl = readline.createInterface({
 const env = new Env();
 
 for (let key in ns) {
-  env.set(new MalSymbol(key), ns[key]);
+  env.set(new MalSymbol(key), new Fn(ns[key]));
 }
 
-env.set(new MalSymbol('eval'), ast => {
-  return EVAL(ast, env);
-});
+env.set(
+  new MalSymbol('eval'),
+  new Fn(ast => {
+    return EVAL(ast, env);
+  })
+);
 
 const READ = str => read_str(str);
 
 const eval_ast = (ast, env) => {
   if (ast instanceof MalSymbol) {
     const value = env.get(ast);
-    if (value !== undefined) {
+    if (value !== undefined && value !== null) {
       return value;
     }
 
-    throw `Symbol not found ${ast}`;
+    throw `Unable to resolve symbol: ${ast.pr_str()} in this context`;
   }
 
   if (ast instanceof List) {
@@ -93,31 +96,31 @@ const EVAL = (ast, env) => {
         break;
 
       case 'fn*':
-        return new Fn(ast.ast[1].ast, ast.ast[2], env);
+        const fn = (...expr) => {
+          const newEnv = Env.createEnv(env, ast.ast[1].ast, expr);
+          return EVAL(ast.ast[2], newEnv);
+        };
+        return new Fn(fn, ast.ast[1].ast, ast.ast[2], env);
 
       default:
         const [func, ...args] = eval_ast(ast, env).ast;
-
-        if (func instanceof Fn) {
+        if (func.env) {
           ast = func.funcBody;
           env = Env.createEnv(func.env, func.binds, args);
           continue;
         }
-
-        if (func instanceof Function) {
-          return func.apply(null, args);
-        }
-
-        throw `${func} is not a function`;
+        return func.apply(args);
     }
   }
 };
 
 const PRINT = value => pr_str(value, true);
 
-const rep = str => PRINT(EVAL(READ(str), env));
+const rep = str => {
+  return PRINT(EVAL(READ(str), env));
+};
 
-const malFuncs = readFileSync('./malFunc.mal', 'utf8').split('\r\n');
+const malFuncs = readFileSync('./malFunc.mal', 'utf8').split('\n\n');
 malFuncs.forEach(rep);
 
 const main = () => {
@@ -134,4 +137,9 @@ const main = () => {
   });
 };
 
-main();
+if (process.argv[2]) {
+  rep(`(load-file "${process.argv[2]}")`);
+  process.exit(0);
+} else {
+  main();
+}

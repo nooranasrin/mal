@@ -1,0 +1,10 @@
+(def! reminder-zero?
+  (fn* [denominator numerator]
+       (zero? (mod numerator denominator))))
+
+(def! fizz-buzz (fn* [num]
+  (if (reminder-zero? num 15) :fizzbuzz 
+      (if (reminder-zero? num 3) :fizz
+          (if (reminder-zero? num 5) :buzz num)))))
+
+(prn (fizz-buzz 5))

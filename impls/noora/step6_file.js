@@ -18,12 +18,17 @@ for (let key in ns) {
   env.set(new MalSymbol(key), new Fn(ns[key]));
 }
 
+const [, , fileName, ...rest] = process.argv;
+const argv = new List(rest.map(arg => new MalSymbol(arg)));
+
 env.set(
   new MalSymbol('eval'),
   new Fn(ast => {
     return EVAL(ast, env);
   })
 );
+
+env.set(new MalSymbol('*ARGV*'), argv);
 
 const READ = str => read_str(str);
 
@@ -137,8 +142,8 @@ const main = () => {
   });
 };
 
-if (process.argv[2]) {
-  rep(`(load-file "${process.argv[2]}")`);
+if (fileName) {
+  rep(`(load-file "${fileName}")`);
   process.exit(0);
 } else {
   main();

@@ -87,7 +87,7 @@ const ns = {
   'atom?': isAtom,
   'reset!': reset,
   'swap!': swap,
-  //   'list?': isList,
+  'list?': isList,
   prn,
   count,
   slurp,

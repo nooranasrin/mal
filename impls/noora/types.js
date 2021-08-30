@@ -18,7 +18,7 @@ class List extends MalTypes {
   }
 
   pr_str(printReadably = false) {
-    return '(' + this.ast.map(pr_str).join(' ') + ')';
+    return '(' + this.ast.map(x => pr_str(x, printReadably)).join(' ') + ')';
   }
 
   isEmpty() {
@@ -147,7 +147,7 @@ class Atom extends MalTypes {
   }
 
   pr_str(printReadably = false) {
-    return `#atom ${this.malValue}`;
+    return `(atom ${this.malValue})`;
   }
 
   set(malValue) {

@@ -4,7 +4,7 @@ const Env = require('./env');
 const { CommentError } = require('./errors');
 const { pr_str } = require('./printer');
 const { read_str } = require('./reader');
-const { MalSymbol, List, Vector, HashMap, Nil, Fn } = require('./types');
+const { MalSymbol, List, Vector, HashMap, Nil, Fn, Str } = require('./types');
 const { readFileSync } = require('fs');
 
 const rl = readline.createInterface({
@@ -19,7 +19,7 @@ for (let key in ns) {
 }
 
 const [, , fileName, ...rest] = process.argv;
-const argv = new List(rest.map(arg => new MalSymbol(arg)));
+const argv = new List(rest.map(arg => new Str(arg)));
 
 env.set(
   new MalSymbol('eval'),

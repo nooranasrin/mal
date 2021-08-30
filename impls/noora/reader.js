@@ -122,6 +122,15 @@ const read_hashmap = reader => {
   return new HashMap(map);
 };
 
+const prependSymbol = (reader, symbol) => {
+  reader.next();
+  const ast = read_form(reader);
+  const malSymbol = new MalSymbol(symbol);
+  return new List([malSymbol, ast]);
+};
+
+const read_deref = reader => prependSymbol(reader, 'deref');
+
 const read_form = reader => {
   const token = reader.peek();
 
@@ -132,6 +141,8 @@ const read_form = reader => {
       return read_vector(reader);
     case '{':
       return read_hashmap(reader);
+    case '@':
+      return read_deref(reader);
     case ')':
       throw 'unbalanced )';
     case ']':

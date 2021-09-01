@@ -1,5 +1,5 @@
 const { read_str } = require('./reader');
-const { pr_str, Nil, List, MalTypes, Str, Atom } = require('./types');
+const { pr_str, Nil, List, MalTypes, Str, Atom, Vector } = require('./types');
 const { readFileSync } = require('fs');
 
 const sum = (...numbers) => numbers.reduce((sum, num) => sum + num, 0);
@@ -8,7 +8,7 @@ const product = (...numbers) => numbers.reduce((prod, num) => prod * num, 1);
 
 const mod = (num1, num2) => num1 % num2;
 
-const equalTo = (val1, val2) => val1 === val2;
+const equalTo = (val1, val2) => val1.equalTo(val2);
 
 const readString = str => read_str(str.str);
 
@@ -24,11 +24,19 @@ const list = (...args) => new List(args);
 
 const isList = param => param instanceof List;
 
+const cons = (element, list) => list.cons(element);
+
 const lessThanOrEqual = (...numbers) =>
   numbers.reduce((res, num) => res <= num);
 
 const swap = (atom, fn, ...args) =>
   atom.set(fn.apply([atom.malValue, ...args]));
+
+const concat = (...lists) => {
+  return lists.reduce((newList, list) => {
+    return new List([...newList.ast, ...list.ast]);
+  }, new List([]));
+};
 
 const difference = (...numbers) => {
   if (numbers.length === 1) {
@@ -69,10 +77,15 @@ const slurp = fileName => {
 };
 
 const str = (...elements) => {
-  const str = elements
-    .map(element => element.pr_str(false).slice(1, -1))
-    .join('');
+  const str = elements.map(element => element.pr_str(false)).join('');
   return new Str(str);
+};
+
+const vec = element => {
+  if (element instanceof List) {
+    return new Vector(element.ast);
+  }
+  return element;
 };
 
 const ns = {
@@ -96,6 +109,9 @@ const ns = {
   atom,
   deref,
   mod,
+  cons,
+  concat,
+  vec,
 };
 
 module.exports = ns;

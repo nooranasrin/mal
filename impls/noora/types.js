@@ -28,6 +28,26 @@ class List extends MalTypes {
   count() {
     return this.ast.length;
   }
+
+  cons(element) {
+    return new List([element, ...this.ast]);
+  }
+
+  equalTo(other) {
+    if (!(other instanceof List)) {
+      return false;
+    }
+    return this.ast.every((elt, index) => {
+      return elt.equalTo(other, other.ast[index]);
+    });
+  }
+
+  startsWith(element) {
+    return (
+      (this.ast[0] instanceof MalSymbol && this.ast[0].symbol === element) ||
+      (this.ast[0] instanceof Str && this.ast[0].str === element)
+    );
+  }
 }
 
 class Vector extends MalTypes {
@@ -46,6 +66,26 @@ class Vector extends MalTypes {
 
   count() {
     return this.ast.length;
+  }
+
+  cons(element) {
+    return new List([element, ...this.ast]);
+  }
+
+  startsWith(element) {
+    return (
+      (this.ast[0] instanceof MalSymbol && this.ast[0].symbol === element) ||
+      (this.ast[0] instanceof Str && this.ast[0].str === element)
+    );
+  }
+
+  equalTo(other) {
+    if (!(other instanceof Vector)) {
+      return false;
+    }
+    return this.ast.every((elt, index) => {
+      return elt.equalTo(other, other.ast[index]);
+    });
   }
 }
 
@@ -117,6 +157,13 @@ class Str extends MalTypes {
   count() {
     return this.ast.length;
   }
+
+  equalTo(other) {
+    if (!(other instanceof Str)) {
+      return false;
+    }
+    return this.str === other.str;
+  }
 }
 class KeyWord extends MalTypes {
   constructor(keyword) {
@@ -137,6 +184,13 @@ class MalSymbol extends MalTypes {
 
   pr_str(printReadably = false) {
     return this.symbol;
+  }
+
+  equalTo(other) {
+    if (!(other instanceof MalSymbol)) {
+      return false;
+    }
+    return this.symbol === other.symbol;
   }
 }
 
@@ -162,6 +216,10 @@ class NilVal extends MalTypes {
 
   pr_str(printReadably = false) {
     return 'nil';
+  }
+
+  equalTo(other) {
+    return other instanceof NilVal;
   }
 }
 

@@ -130,11 +130,15 @@ const prependSymbol = (reader, symbol) => {
 };
 
 const read_deref = reader => prependSymbol(reader, 'deref');
+const read_quote = reader => prependSymbol(reader, 'quote');
+const read_quasiquote = reader => prependSymbol(reader, 'quasiquote');
+const read_unquote = reader => prependSymbol(reader, 'unquote');
+const read_splice_unquote = reader => prependSymbol(reader, 'splice-unquote');
 
 const read_form = reader => {
   const token = reader.peek();
 
-  switch (token[0]) {
+  switch (token) {
     case '(':
       return read_list(reader);
     case '[':
@@ -143,6 +147,14 @@ const read_form = reader => {
       return read_hashmap(reader);
     case '@':
       return read_deref(reader);
+    case "'":
+      return read_quote(reader);
+    case '~@':
+      return read_splice_unquote(reader);
+    case '~':
+      return read_unquote(reader);
+    case '`':
+      return read_quasiquote(reader);
     case ')':
       throw 'unbalanced )';
     case ']':

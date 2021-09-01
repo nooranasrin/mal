@@ -8,7 +8,9 @@ const product = (...numbers) => numbers.reduce((prod, num) => prod * num, 1);
 
 const mod = (num1, num2) => num1 % num2;
 
-const equalTo = (val1, val2) => val1.equalTo(val2);
+const greaterThan = (num1, num2) => num1 > num2;
+
+const lesserThan = (num1, num2) => num1 < num2;
 
 const readString = str => read_str(str.str);
 
@@ -36,6 +38,13 @@ const concat = (...lists) => {
   return lists.reduce((newList, list) => {
     return new List([...newList.ast, ...list.ast]);
   }, new List([]));
+};
+
+const equalTo = (val1, val2) => {
+  if (!(val1 instanceof MalTypes)) {
+    return val1 === val2;
+  }
+  return val1.equalTo(val2);
 };
 
 const difference = (...numbers) => {
@@ -88,12 +97,35 @@ const vec = element => {
   return element;
 };
 
+const nth = (sequence, n) => {
+  if (!sequence.nth) {
+    throw 'Unsupported operation';
+  }
+  return sequence.nth(n);
+};
+
+const first = sequence => {
+  if (!sequence.first) {
+    throw 'Unsupported operation';
+  }
+  return sequence.first();
+};
+
+const rest = sequence => {
+  if (!sequence.rest) {
+    throw 'Unsupported operation';
+  }
+  return sequence.rest();
+};
+
 const ns = {
   '+': sum,
   '-': difference,
   '*': product,
   '/': division,
   '<=': lessThanOrEqual,
+  '>': greaterThan,
+  '<': lesserThan,
   'empty?': empty,
   '=': equalTo,
   'read-string': readString,
@@ -112,6 +144,9 @@ const ns = {
   cons,
   concat,
   vec,
+  nth,
+  first,
+  rest,
 };
 
 module.exports = ns;

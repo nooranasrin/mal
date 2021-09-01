@@ -7,3 +7,5 @@
 (def! zero?
   (fn* [num]
        (if (= num 0) true false)))
+
+(defmacro! if-not (fn* [con if-part else-part] `(if ~con ~else-part ~if-part)))

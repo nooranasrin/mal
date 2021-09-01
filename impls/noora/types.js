@@ -33,6 +33,27 @@ class List extends MalTypes {
     return new List([element, ...this.ast]);
   }
 
+  first() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return Nil;
+    }
+    return this.ast[0];
+  }
+
+  rest() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return new List([]);
+    }
+    return new List(this.ast.slice(1));
+  }
+
+  nth(n) {
+    if (n >= this.ast.length || n < 0) {
+      throw `Index out of range: ${n}`;
+    }
+    return this.ast[n];
+  }
+
   equalTo(other) {
     if (!(other instanceof List)) {
       return false;
@@ -70,6 +91,27 @@ class Vector extends MalTypes {
 
   cons(element) {
     return new List([element, ...this.ast]);
+  }
+
+  first() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return Nil;
+    }
+    return this.ast[0];
+  }
+
+  rest() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return new List([]);
+    }
+    return new List(this.ast.slice(1));
+  }
+
+  nth(n) {
+    if (n >= this.ast.length || n < 0) {
+      throw `Index out of range: ${n}`;
+    }
+    return this.ast[n];
   }
 
   startsWith(element) {
@@ -116,12 +158,13 @@ class HashMap extends MalTypes {
 }
 
 class Fn extends MalTypes {
-  constructor(fn, binds, funcBody, env) {
+  constructor(fn, binds, funcBody, env, isMacro = false) {
     super();
     this.fn = fn;
     this.binds = binds;
     this.funcBody = funcBody;
     this.env = env;
+    this.isMacro = isMacro;
   }
 
   pr_str(printReadably = false) {
@@ -151,11 +194,25 @@ class Str extends MalTypes {
   }
 
   isEmpty() {
-    return this.str.length === 0;
+    return this.count === 0;
   }
 
   count() {
-    return this.ast.length;
+    return this.str.length;
+  }
+
+  first() {
+    if (this.isEmpty() || this.str === Nil) {
+      return Nil;
+    }
+    return this.str[0];
+  }
+
+  nth(n) {
+    if (n >= this.str.length || n < 0) {
+      throw `Index out of range: ${n}`;
+    }
+    return this.str[n];
   }
 
   equalTo(other) {

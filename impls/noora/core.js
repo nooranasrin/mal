@@ -86,8 +86,14 @@ const slurp = fileName => {
 };
 
 const str = (...elements) => {
-  const str = elements.map(element => element.pr_str(false)).join('');
-  return new Str(str);
+  const str = elements.map(element => {
+    let str = element.pr_str(false);
+    if (element instanceof Str) {
+      str = str.slice(1, -1);
+    }
+    return str;
+  });
+  return new Str(str.join(''));
 };
 
 const vec = element => {

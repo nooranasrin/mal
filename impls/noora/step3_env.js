@@ -40,7 +40,7 @@ const eval_ast = (ast, env) => {
       return value;
     }
 
-    throw `Symbol not found ${ast}`;
+    throw `${ast.symbol} not found.`;
   }
 
   if (ast instanceof List) {

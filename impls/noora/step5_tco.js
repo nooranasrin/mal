@@ -26,7 +26,7 @@ const eval_ast = (ast, env) => {
       return value;
     }
 
-    throw `Symbol not found ${ast}`;
+    throw `${ast.symbol} not found.`;
   }
 
   if (ast instanceof List) {
@@ -88,7 +88,11 @@ const EVAL = (ast, env) => {
         break;
 
       case 'fn*':
-        return new Fn(ast.ast[1].ast, ast.ast[2], env);
+        const fn = (...expr) => {
+          const newEnv = Env.createEnv(env, ast.ast[1].ast, expr);
+          return EVAL(ast.ast[2], newEnv);
+        };
+        return new Fn(fn, ast.ast[1].ast, ast.ast[2], env);
 
       default:
         const [func, ...args] = eval_ast(ast, env).ast;

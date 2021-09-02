@@ -11,123 +11,76 @@ const pr_str = (malValue, printReadably = false) => {
   return malValue;
 };
 
-class List extends MalTypes {
+class Sequence extends MalTypes {
   constructor(ast) {
     super();
     this.ast = ast;
   }
 
+  isEmpty() {
+    return this.ast.length === 0;
+  }
+
+  count() {
+    return this.ast.length;
+  }
+
+  cons(element) {
+    return new List([element, ...this.ast]);
+  }
+
+  first() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return Nil;
+    }
+    return this.ast[0];
+  }
+
+  rest() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return new List([]);
+    }
+    return new List(this.ast.slice(1));
+  }
+
+  nth(n) {
+    if (n >= this.ast.length || n < 0) {
+      throw `Index out of range: ${n}`;
+    }
+    return this.ast[n];
+  }
+
+  startsWith(element) {
+    return (
+      (this.ast[0] instanceof MalSymbol && this.ast[0].symbol === element) ||
+      (this.ast[0] instanceof Str && this.ast[0].str === element)
+    );
+  }
+
+  isEqual(other) {
+    return this.ast.every((elt, index) => {
+      return elt.equalTo(other, other.ast[index]);
+    });
+  }
+}
+
+class List extends Sequence {
   pr_str(printReadably = false) {
     return '(' + this.ast.map(x => pr_str(x, printReadably)).join(' ') + ')';
   }
 
-  isEmpty() {
-    return this.ast.length === 0;
-  }
-
-  count() {
-    return this.ast.length;
-  }
-
-  cons(element) {
-    return new List([element, ...this.ast]);
-  }
-
-  first() {
-    if (this.isEmpty() || this.ast === Nil) {
-      return Nil;
-    }
-    return this.ast[0];
-  }
-
-  rest() {
-    if (this.isEmpty() || this.ast === Nil) {
-      return new List([]);
-    }
-    return new List(this.ast.slice(1));
-  }
-
-  nth(n) {
-    if (n >= this.ast.length || n < 0) {
-      throw `Index out of range: ${n}`;
-    }
-    return this.ast[n];
-  }
-
   equalTo(other) {
-    if (!(other instanceof List)) {
-      return false;
-    }
-    return this.ast.every((elt, index) => {
-      return elt.equalTo(other, other.ast[index]);
-    });
-  }
-
-  startsWith(element) {
-    return (
-      (this.ast[0] instanceof MalSymbol && this.ast[0].symbol === element) ||
-      (this.ast[0] instanceof Str && this.ast[0].str === element)
-    );
+    return other instanceof List ? this.isEqual(other) : false;
   }
 }
 
-class Vector extends MalTypes {
-  constructor(ast) {
-    super();
-    this.ast = ast;
-  }
-
+class Vector extends Sequence {
   pr_str(printReadably = false) {
     return '[' + this.ast.map(pr_str).join(' ') + ']';
   }
 
-  isEmpty() {
-    return this.ast.length === 0;
-  }
-
-  count() {
-    return this.ast.length;
-  }
-
-  cons(element) {
-    return new List([element, ...this.ast]);
-  }
-
-  first() {
-    if (this.isEmpty() || this.ast === Nil) {
-      return Nil;
-    }
-    return this.ast[0];
-  }
-
-  rest() {
-    if (this.isEmpty() || this.ast === Nil) {
-      return new List([]);
-    }
-    return new List(this.ast.slice(1));
-  }
-
-  nth(n) {
-    if (n >= this.ast.length || n < 0) {
-      throw `Index out of range: ${n}`;
-    }
-    return this.ast[n];
-  }
-
-  startsWith(element) {
-    return (
-      (this.ast[0] instanceof MalSymbol && this.ast[0].symbol === element) ||
-      (this.ast[0] instanceof Str && this.ast[0].str === element)
-    );
-  }
-
   equalTo(other) {
-    if (!(other instanceof Vector)) {
-      return false;
-    }
-    return this.ast.every((elt, index) => {
-      return elt.equalTo(other, other.ast[index]);
-    });
+    return other instanceof Vector ? this.isEqual(other) : false;
   }
 }
 

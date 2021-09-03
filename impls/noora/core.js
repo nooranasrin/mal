@@ -119,6 +119,9 @@ const nth = (sequence, n) => {
 };
 
 const first = sequence => {
+  if (sequence === Nil) {
+    return Nil;
+  }
   if (!sequence.first) {
     throw 'Unsupported operation';
   }
@@ -126,6 +129,9 @@ const first = sequence => {
 };
 
 const rest = sequence => {
+  if (sequence === Nil) {
+    return new List([]);
+  }
   if (!sequence.rest) {
     throw 'Unsupported operation';
   }

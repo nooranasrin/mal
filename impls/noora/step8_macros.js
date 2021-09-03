@@ -104,7 +104,7 @@ const macroexpand = (ast, env) => {
     const firstElement = env.get(ast.ast[0]);
     ast = firstElement.apply(ast.ast.slice(1));
   }
-  return ast;
+  return ast === undefined ? Nil : ast;
 };
 
 const EVAL = (ast, env) => {

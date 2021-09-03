@@ -78,7 +78,7 @@ class List extends Sequence {
 
 class Vector extends Sequence {
   pr_str(printReadably = false) {
-    return '[' + this.ast.map(pr_str).join(' ') + ']';
+    return '[' + this.ast.map(x => pr_str(x, printReadably)).join(' ') + ']';
   }
 }
 

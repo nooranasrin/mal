@@ -74,10 +74,12 @@ const EVAL = (ast, env) => {
       return ast.ast.slice(1).reduce((_, expr) => EVAL(expr, env), null);
 
     case 'if':
-      const result = EVAL(ast.ast[1], env);
-      return result === Nil || result === false
-        ? EVAL(ast.ast[3], env)
-        : EVAL(ast.ast[2], env);
+      const exprVal = EVAL(ast.ast[1], env);
+      const result =
+        exprVal === Nil || exprVal === false
+          ? EVAL(ast.ast[3], env)
+          : EVAL(ast.ast[2], env);
+      return result === undefined ? Nil : result;
 
     case 'fn*':
       return (...expr) => {

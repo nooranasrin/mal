@@ -57,9 +57,15 @@ class Sequence extends MalTypes {
     );
   }
 
-  isEqual(other) {
+  equalTo(other) {
+    if (other?.ast?.length !== 0 && this.ast.length === 0) {
+      return false;
+    }
     return this.ast.every((elt, index) => {
-      return elt.equalTo(other, other.ast[index]);
+      if (!(elt instanceof MalTypes)) {
+        return elt === other.ast[index];
+      }
+      return elt.equalTo(elt, other.ast[index]);
     });
   }
 }
@@ -68,19 +74,11 @@ class List extends Sequence {
   pr_str(printReadably = false) {
     return '(' + this.ast.map(x => pr_str(x, printReadably)).join(' ') + ')';
   }
-
-  equalTo(other) {
-    return other instanceof List ? this.isEqual(other) : false;
-  }
 }
 
 class Vector extends Sequence {
   pr_str(printReadably = false) {
     return '[' + this.ast.map(pr_str).join(' ') + ']';
-  }
-
-  equalTo(other) {
-    return other instanceof Vector ? this.isEqual(other) : false;
   }
 }
 
@@ -143,7 +141,7 @@ class Str extends MalTypes {
         .replace(/\n/g, '\\n');
       return '"' + string + '"';
     }
-    return '"' + this.str + '"';
+    return this.str;
   }
 
   isEmpty() {
@@ -184,6 +182,10 @@ class KeyWord extends MalTypes {
   pr_str(printReadably = false) {
     return ':' + this.keyword;
   }
+
+  equalTo(other) {
+    return other instanceof KeyWord ? this.keyword === other.keyword : false;
+  }
 }
 
 class MalSymbol extends MalTypes {
@@ -197,10 +199,7 @@ class MalSymbol extends MalTypes {
   }
 
   equalTo(other) {
-    if (!(other instanceof MalSymbol)) {
-      return false;
-    }
-    return this.symbol === other.symbol;
+    return other instanceof MalSymbol ? this.symbol === other.symbol : false;
   }
 }
 

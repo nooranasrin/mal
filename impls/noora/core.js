@@ -28,8 +28,13 @@ const isList = param => param instanceof List;
 
 const cons = (element, list) => list.cons(element);
 
+const not = val => !val;
+
 const lessThanOrEqual = (...numbers) =>
   numbers.reduce((res, num) => res <= num);
+
+const greaterThanOrEqual = (...numbers) =>
+  numbers.reduce((res, num) => res >= num);
 
 const swap = (atom, fn, ...args) =>
   atom.set(fn.apply([atom.malValue, ...args]));
@@ -61,10 +66,19 @@ const division = (...numbers) => {
   return numbers.reduce((res, num) => res / num);
 };
 
-const prn = val => {
-  console.log(pr_str(val, true));
+const toStr = (elements, printReadably) =>
+  elements.map(elt => pr_str(elt, printReadably)).join(' ');
+
+const print = (elements, printReadably) => {
+  console.log(toStr(elements, printReadably));
   return Nil;
 };
+
+const prn = (...elements) => print(elements, true);
+
+const println = (...elements) => print(elements, false);
+
+const prStr = (...elements) => toStr(elements, true);
 
 const empty = param => {
   if (param instanceof MalTypes) {
@@ -86,13 +100,7 @@ const slurp = fileName => {
 };
 
 const str = (...elements) => {
-  const str = elements.map(element => {
-    let str = element.pr_str(false);
-    if (element instanceof Str) {
-      str = str.slice(1, -1);
-    }
-    return str;
-  });
+  const str = elements.map(element => pr_str(element, false));
   return new Str(str.join(''));
 };
 
@@ -130,6 +138,7 @@ const ns = {
   '*': product,
   '/': division,
   '<=': lessThanOrEqual,
+  '>=': greaterThanOrEqual,
   '>': greaterThan,
   '<': lesserThan,
   'empty?': empty,
@@ -139,7 +148,9 @@ const ns = {
   'reset!': reset,
   'swap!': swap,
   'list?': isList,
+  'pr-str': prStr,
   prn,
+  println,
   count,
   slurp,
   list,
@@ -153,6 +164,7 @@ const ns = {
   nth,
   first,
   rest,
+  not,
 };
 
 module.exports = ns;

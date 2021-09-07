@@ -27,3 +27,12 @@
   (let* [new-fun (fn* [context element] 
                       (if (func element) (cons element context) context))] 
         (reverse (reduce new-fun (list) sequence))))
+
+(defn! some? [value]
+  (if (= nil value) false true))
+
+(defn! some [func sequence]
+  (let* [remaining-elements (rest sequence)]
+        (cond (func (first sequence)) true
+              (empty? remaining-elements) nil
+              :else (some func remaining-elements))))

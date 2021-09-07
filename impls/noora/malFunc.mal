@@ -4,15 +4,21 @@
         (read-string 
          (str "(do " (slurp f) "\nnil)")))))
 
-(def! zero?
-  (fn* [num]
-       (if (= num 0) true false)))
+(defn! zero? [num] (if (= num 0) true false))
 
-(defmacro! cond 
-  (fn* (& xs) 
-       (if (> (count xs) 0) 
-         (list 'if (first xs) 
-               (if (> (count xs) 1) 
-                 (nth xs 1) 
-                 (throw "odd number of forms to cond")) 
-               (cons 'cond (rest (rest xs)))))))
+(defn! inc [num] (+ num 1))
+
+(defn! dec [num] (- num 1))
+
+(defn! even? [num] (zero? (mod num 2)))
+
+(defn! odd? [num] (not (even? num)))
+
+(defn! reduce [func context sequence]
+  (if (empty? sequence) 
+    context 
+    (reduce func (func context (first sequence)) (rest sequence))))
+
+(defn! map [func sequence]
+  (let* [new-fun (fn* [context element] (cons (func element) context))]
+        (reverse (reduce new-fun (list) sequence))))

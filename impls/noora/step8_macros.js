@@ -192,6 +192,8 @@ const PRINT = value => pr_str(value, true);
 
 const rep = str => PRINT(EVAL(READ(str), env));
 
+const macros = readFileSync('./macros.mal', 'utf8').split('\n\n');
+macros.forEach(rep);
 const malFuncs = readFileSync('./malFunc.mal', 'utf8').split('\n\n');
 malFuncs.forEach(rep);
 

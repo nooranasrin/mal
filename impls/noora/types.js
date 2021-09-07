@@ -29,11 +29,22 @@ class Sequence extends MalTypes {
     return new List([element, ...this.ast]);
   }
 
+  reverse() {
+    return new List(this.ast.reverse());
+  }
+
   first() {
     if (this.isEmpty() || this.ast === Nil) {
       return Nil;
     }
     return this.ast[0];
+  }
+
+  last() {
+    if (this.isEmpty() || this.ast === Nil) {
+      return Nil;
+    }
+    return this.ast[this.ast.length - 1];
   }
 
   rest() {
@@ -159,6 +170,13 @@ class Str extends MalTypes {
     return this.str[0];
   }
 
+  last() {
+    if (this.isEmpty() || this.str === Nil) {
+      return Nil;
+    }
+    return this.str[this.str.length - 1];
+  }
+
   nth(n) {
     if (n >= this.str.length || n < 0) {
       throw `Index out of range: ${n}`;
@@ -171,6 +189,10 @@ class Str extends MalTypes {
       return false;
     }
     return this.str === other.str;
+  }
+
+  reverse() {
+    return new List(this.str.reverse());
   }
 }
 class KeyWord extends MalTypes {

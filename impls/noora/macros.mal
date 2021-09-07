@@ -1,0 +1,33 @@
+(defmacro! cond 
+  (fn* (& xs) 
+       (if (> (count xs) 0) 
+         (list 'if (first xs) 
+               (if (> (count xs) 1) 
+                 (nth xs 1) 
+                 (throw "odd number of forms to cond")) 
+               (cons 'cond (rest (rest xs)))))))
+
+(defmacro! if-not
+  (fn* [expression true-part else-part]
+       (list 'if expression else-part true-part)))
+
+(defmacro! and
+  (fn* [& expressions]
+       (cond 
+         (empty? expressions) true
+         (= 1 (count expressions)) (first expressions)
+         :else  `(let* [first-exprs ~(first expressions)] 
+                   (if first-exprs (and ~@(rest expressions)) first-exprs)))))
+
+(defmacro! or
+  (fn* [& expressions]
+       (cond 
+         (empty? expressions) nil
+         (= 1 (count expressions)) (first expressions)
+         :else  `(let* [first-exprs ~(first expressions)] 
+                   (if first-exprs first-exprs (or ~@(rest expressions)))))))
+
+(defmacro! defn!
+  (fn* [name args body]
+       (list 'def! name 
+             (list 'fn* args body))))

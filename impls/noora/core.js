@@ -28,6 +28,8 @@ const isList = param => param instanceof List;
 
 const cons = (element, list) => list.cons(element);
 
+const reverse = sequence => sequence.reverse();
+
 const not = val => !val;
 
 const lessThanOrEqual = (...numbers) =>
@@ -118,6 +120,13 @@ const nth = (sequence, n) => {
   return sequence.nth(n);
 };
 
+const last = sequence => {
+  if (!sequence.last) {
+    throw 'Unsupported operation';
+  }
+  return sequence.last();
+};
+
 const first = sequence => {
   if (sequence === Nil) {
     return Nil;
@@ -169,8 +178,10 @@ const ns = {
   vec,
   nth,
   first,
+  last,
   rest,
   not,
+  reverse,
 };
 
 module.exports = ns;

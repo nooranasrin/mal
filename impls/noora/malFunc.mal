@@ -36,3 +36,10 @@
         (cond (func (first sequence)) true
               (empty? remaining-elements) nil
               :else (some func remaining-elements))))
+
+(defn! every? [func sequence]
+  (let* [remaining-elements (rest sequence)
+         first-element (first sequence)]
+        (cond (empty? sequence) true
+              (func first-element) (some func remaining-elements)
+              :else false)))

@@ -22,3 +22,8 @@
 (defn! map [func sequence]
   (let* [new-fun (fn* [context element] (cons (func element) context))]
         (reverse (reduce new-fun (list) sequence))))
+
+(defn! filter [func sequence]
+  (let* [new-fun (fn* [context element] 
+                      (if (func element) (cons element context) context))] 
+        (reverse (reduce new-fun (list) sequence))))

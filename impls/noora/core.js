@@ -30,6 +30,8 @@ const cons = (element, list) => list.cons(element);
 
 const reverse = sequence => sequence.reverse();
 
+const insert = (sequence, pos, element) => sequence.insert(pos, element);
+
 const not = val => !val;
 
 const lessThanOrEqual = (...numbers) =>
@@ -182,6 +184,7 @@ const ns = {
   rest,
   not,
   reverse,
+  insert,
 };
 
 module.exports = ns;

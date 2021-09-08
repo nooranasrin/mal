@@ -7,6 +7,14 @@
                  (throw "odd number of forms to cond")) 
                (cons 'cond (rest (rest xs)))))))
 
+(defmacro! condp 
+  (fn* (func constant & exprs)
+       (if (and (= (first exprs) :else) (= 2 (count exprs)))
+         (last exprs)
+         (list 'if (list func (first exprs) constant)
+               (nth exprs 1)
+               `(condp ~func ~constant ~@(rest (rest exprs)))))))
+
 (defmacro! if-not
   (fn* [expression true-part else-part]
        (list 'if expression else-part true-part)))
@@ -31,3 +39,23 @@
   (fn* [name args body]
        (list 'def! name 
              (list 'fn* args body))))
+
+(defmacro! ->
+  (fn* [x & forms
+         (let* [form (first forms)
+                remaining (rest forms)
+                current (if (list? form) form (list form))
+                next-call (insert current 1 x)] 
+               (if (empty? remaining) 
+                   next-call
+                   `(-> ~next-call ~@remaining)))]))
+
+(defmacro! ->>
+  (fn* [x & forms
+         (let* [form (first forms)
+                remaining (rest forms)
+                current (if (list? form) form (list form))
+                next-call (insert current (count current) x)] 
+               (if (empty? remaining) 
+                   next-call
+                   `(->> ~next-call ~@remaining)))]))

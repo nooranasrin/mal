@@ -29,6 +29,12 @@ class Sequence extends MalTypes {
     return new List([element, ...this.ast]);
   }
 
+  insert(pos, element) {
+    const newAst = this.ast.slice(0);
+    newAst.splice(pos, 0, element);
+    return new List(newAst);
+  }
+
   reverse() {
     return new List(this.ast.reverse());
   }

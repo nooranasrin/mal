@@ -8,6 +8,7 @@ const {
   KeyWord,
   MalSymbol,
 } = require('./types');
+const { createMap } = require('./utils');
 
 class READER {
   constructor(tokens) {
@@ -105,21 +106,7 @@ const read_vector = reader => {
 
 const read_hashmap = reader => {
   const ast = read_seq(reader, '}');
-  if (ast.length % 2 !== 0) {
-    throw 'Map literal must contain an even number of forms';
-  }
-
-  const keys = ast.filter((_, index) => index % 2 === 0);
-  const duplicates = keys.filter((val, index) => keys.indexOf(val) != index);
-  if (duplicates.length > 0) {
-    throw `Duplicate key: ${duplicates[0]}`;
-  }
-
-  const map = new Map();
-  for (let index = 0; index < ast.length; index += 2) {
-    map.set(ast[index], ast[index + 1]);
-  }
-  return new HashMap(map);
+  return new HashMap(createMap(ast));
 };
 
 const prependSymbol = (reader, symbol) => {

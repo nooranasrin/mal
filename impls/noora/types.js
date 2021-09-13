@@ -1,3 +1,5 @@
+const { createMap } = require('./utils');
+
 class MalTypes {
   pr_str(printReadably = false) {
     return '___default_malType___';
@@ -122,6 +124,67 @@ class HashMap extends MalTypes {
 
   count() {
     return this.ast.size;
+  }
+
+  assoc(...keyAndValues) {
+    const newKeysAndValues = createMap(keyAndValues);
+    const newMap = new Map(...this.ast, newKeysAndValues);
+    return new HashMap(newMap);
+  }
+
+  dissoc(...keys) {
+    const newMap = new Map(this.ast);
+    for (const [key] of newMap) {
+      if (keys.some(other => other.equalTo(key))) {
+        newMap.delete(key);
+      }
+    }
+    return new HashMap(newMap);
+  }
+
+  get(key) {
+    const matchingKey = this.keys().ast.find(k => {
+      if (k instanceof MalTypes) {
+        return k.equalTo(key);
+      }
+      return k === key;
+    });
+    return matchingKey === undefined ? Nil : this.ast.get(matchingKey);
+  }
+
+  includes(other) {
+    for (const [key] of this.ast) {
+      if (key.equalTo(other)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  keys() {
+    return new List([...this.ast.keys()]);
+  }
+
+  vals() {
+    return new List([...this.ast.values()]);
+  }
+
+  equalTo(other) {
+    if (!(other instanceof HashMap) || this.count() !== other.count()) {
+      return false;
+    }
+    if (this.count() === 0 && other.count() === 0) {
+      return true;
+    }
+    for (const [key, value] of this.ast) {
+      const otherVal = other.get(key);
+      const isEqual =
+        (otherVal.equalTo && value.equalTo(otherVal)) || value === otherVal;
+      if (otherVal === undefined || !isEqual) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 

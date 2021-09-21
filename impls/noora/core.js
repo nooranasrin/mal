@@ -70,7 +70,7 @@ const symbol = str => new MalSymbol(str.str);
 
 const isKeyword = val => val instanceof KeyWord;
 
-const get = (map, key) => map.get(key);
+const get = (map, key) => (map.get ? map.get(key) : Nil);
 
 const isIncludes = (map, key) => map.includes(key);
 
@@ -197,14 +197,14 @@ const vec = element => {
 
 const nth = (sequence, n) => {
   if (!sequence.nth) {
-    throw 'Unsupported operation';
+    throwFn(new Str('Unsupported operation'));
   }
   return sequence.nth(n);
 };
 
 const last = sequence => {
   if (!sequence.last) {
-    throw 'Unsupported operation';
+    throwFn(new Str('Unsupported operation'));
   }
   return sequence.last();
 };
@@ -214,7 +214,7 @@ const first = sequence => {
     return Nil;
   }
   if (!sequence.first) {
-    throw 'Unsupported operation';
+    throwFn(new Str('Unsupported operation'));
   }
   return sequence.first();
 };
@@ -224,7 +224,7 @@ const rest = sequence => {
     return new List([]);
   }
   if (!sequence.rest) {
-    throw 'Unsupported operation';
+    throwFn(new Str('Unsupported operation'));
   }
   return sequence.rest();
 };

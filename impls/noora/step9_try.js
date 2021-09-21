@@ -1,7 +1,7 @@
 const readline = require('readline');
 const ns = require('./core');
 const Env = require('./env');
-const { CommentError } = require('./errors');
+const { CommentError, CustomError } = require('./errors');
 const { pr_str } = require('./printer');
 const { read_str } = require('./reader');
 const { MalSymbol, List, Vector, HashMap, Nil, Fn, Str } = require('./types');
@@ -39,7 +39,7 @@ const eval_ast = (ast, env) => {
       return value;
     }
 
-    throw `Unable to resolve symbol: ${ast.pr_str()} in this context`;
+    throw new CustomError(new Str(`'${ast.pr_str(true)}' not found`));
   }
 
   if (ast instanceof List) {
@@ -179,6 +179,9 @@ const EVAL = (ast, env) => {
         try {
           return EVAL(ast.ast[1], env);
         } catch (e) {
+          if (!ast.ast[2]) {
+            return e.message;
+          }
           const error = read_str(`"${e.message}"`);
           env = new Env(env);
           env.set(ast.ast[2].ast[1], error);

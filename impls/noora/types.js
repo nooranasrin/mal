@@ -1,3 +1,4 @@
+const { CustomError } = require('./errors');
 const { createMap } = require('./utils');
 
 class MalTypes {
@@ -64,7 +65,7 @@ class Sequence extends MalTypes {
 
   nth(n) {
     if (n >= this.ast.length || n < 0) {
-      throw `Index out of range: ${n}`;
+      throw new CustomError(new Str(`Index out of range: ${n}`));
     }
     return this.ast[n];
   }
@@ -127,9 +128,10 @@ class HashMap extends MalTypes {
   }
 
   assoc(...keyAndValues) {
-    const newKeysAndValues = createMap(keyAndValues);
-    const newMap = new Map(...this.ast, newKeysAndValues);
-    return new HashMap(newMap);
+    const associatedKeysAndValues = Array.from(this.ast)
+      .flat()
+      .concat(keyAndValues);
+    return new HashMap(createMap(associatedKeysAndValues));
   }
 
   dissoc(...keys) {
@@ -248,7 +250,7 @@ class Str extends MalTypes {
 
   nth(n) {
     if (n >= this.str.length || n < 0) {
-      throw `Index out of range: ${n}`;
+      throw new CustomError(new Str(`Index out of range: ${n}`));
     }
     return this.str[n];
   }
